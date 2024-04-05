@@ -59,25 +59,21 @@ namespace NowPlayingTUI {
 
         class Options {
 
-            [Option('x',"xcoord", Required = false, Default = 0)]
+            [Option('x',"xcoord", Required = false, Default = -790)]
             public int x { get; set; }
 
             [Option('y', "ycoord", Required = false, Default = 0)]
             public int y { get; set; }
-
-            [Option('w', "width", Required = false, Default = 800)]
-            public int w { get; set; }
         }
 
         private async Task Run(string[] args) {
 
-            int x = 0,y = 0,w = 0;
+            int x = 0,y = 0;
 
             Parser.Default.ParseArguments<Options>(args)
                 .WithParsed(o => {
                     x = o.x;
                     y = o.y;
-                    w = Math.Clamp(o.w, 800, 1080);
                 });
 
             Console.Title = "Now Playing TUI";
@@ -103,7 +99,7 @@ namespace NowPlayingTUI {
                 SetWindowPos(consoleWindow, IntPtr.Zero, 0, 0, 0, 0, 0x0001 | 0x0002); // SWP_NOMOVE | SWP_NOSIZE
 
                 // Set the new position and size (example: x=100, y=100, width=800, height=600)
-                MoveWindow(consoleWindow, x, y, w, 220, true);
+                MoveWindow(consoleWindow, x, y, 810, 220, true);
 
                 // Make the console window visible
                 SetWindowLong(consoleWindow, GWL_STYLE, style | WS_VISIBLE);

@@ -160,6 +160,22 @@ namespace NowPlayingTUI {
                 }
             }
 
+            /*Task.Run(() => {
+                while(true) {
+                    Thread.Sleep(1000);
+                    if(CurrentState == State.Playing) {
+                        ConsoleX.GenerateAudioSpectrum(1, 5, 47);
+                        if(CurrentSong.img != null) {
+                            ConsoleX.GenerateAudioSpectrum(50, 5, 22);
+                            ConsoleX.GenerateAudioSpectrum(74, 5, 23);
+                        } else {
+                            ConsoleX.GenerateAudioSpectrum(50, 5, 40);
+                        }
+                    }
+                }
+
+            });*/
+
             var t = Task.Run(() => {
                 Thread.Sleep(1000);
                 Process spotifyProcess = null;
@@ -246,7 +262,7 @@ namespace NowPlayingTUI {
                 imgUrl = imgUrl ?? null;
 
                 //Create Song object
-                if(imgUrl != null) {
+                if(!string.IsNullOrEmpty(imgUrl)) {
                     CurrentSong = new Song() {
                         Title = artistName + " " + trackTitle,
                         Album = albumName,

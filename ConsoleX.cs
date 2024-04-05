@@ -141,12 +141,8 @@ namespace NowPlayingTUI {
 
             AnsiConsole.Background = Spectre.Console.Color.Black;
 
-            GenerateAudioSpectrum(1, 5, 46);
-            GenerateAudioSpectrum(50, 5, 22);
-            GenerateAudioSpectrum(74, 5, 23);
-
             // Render the layout
-            AnsiConsole.Write(layout);
+            AnsiConsole.Write(layout);            
 
             Console.SetCursorPosition(0, 0);
         }
@@ -167,7 +163,7 @@ namespace NowPlayingTUI {
             AnsiConsole.Background = Spectre.Console.Color.Black;
             // Render the layout
             AnsiConsole.Write(layout);
-            ConsoleX.GenerateAudioSpectrumInactive(1, 5, 96);
+            ConsoleX.GenerateAudioSpectrumInactive(1, 5, 95);
             Console.SetCursorPosition(0, 0);
         }
 
@@ -187,7 +183,7 @@ namespace NowPlayingTUI {
             AnsiConsole.Background = Spectre.Console.Color.Black;
             // Render the layout
             AnsiConsole.Write(layout);
-            ConsoleX.GenerateAudioSpectrumInactive(1, 5, 96);
+            ConsoleX.GenerateAudioSpectrumInactive(1, 5, 95);
             Console.SetCursorPosition(0, 0);
         }
     }
