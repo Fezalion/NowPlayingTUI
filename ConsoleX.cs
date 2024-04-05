@@ -16,6 +16,8 @@ namespace NowPlayingTUI {
         
         public static void writeat(string s, int x, int y, Spectre.Console.Color color) {
             try {
+                if(string.IsNullOrEmpty(s))
+                    return;
                 Console.SetCursorPosition(x - 1, y);
                 Console.Write("┐");
                 Console.ForegroundColor = color;
@@ -98,7 +100,15 @@ namespace NowPlayingTUI {
         internal void DrawPlaying(Song currentSong) {
             AnsiConsole.Clear();
             var textColor = "[Lime]";
-            
+
+            var layout = new Layout("Root")
+                    .SplitColumns(
+                        new Layout("Left"),
+                                new Layout("Right")
+                                    .SplitColumns(
+                                        new Layout("Album"),
+                                                new Layout("AlbumCover")
+                                        ));
 
             var leftPanel =
                     new Panel(
@@ -113,35 +123,27 @@ namespace NowPlayingTUI {
             AlbumPanel.Expand = true;
             AlbumPanel.Header = new PanelHeader("┐" + textColor + "Album[/]┌");
 
-            if(currentSong.img != null) {
-                currentSong.img.MaxWidth(3);
-                currentSong.img.BilinearResampler();
-            }
-
-            var AlbumDataPanel = new Panel(Align.Center(currentSong.img != null ? currentSong.img : new Markup("").Overflow(Overflow.Ellipsis), VerticalAlignment.Middle));
-            AlbumDataPanel.Expand = true;
-            AlbumDataPanel.Header = new PanelHeader("┐" + textColor + "AlbumIMG[/]┌");
-
-
-            var layout = new Layout("Root")
-                    .SplitColumns(
-                        new Layout("Left"),
-                                new Layout("Right")
-                                    .SplitColumns(
-                                        new Layout("Album"),
-                                                new Layout("AlbumCover")
-                                        ));
-
             layout["left"].Update(leftPanel);
 
             layout["Album"].Update(AlbumPanel);
-            layout["AlbumCover"].Update(AlbumDataPanel);
+
+            if(currentSong.img != null) {
+                currentSong.img.MaxWidth(3);
+                currentSong.img.BilinearResampler();
+
+                var AlbumDataPanel = new Panel(Align.Center(currentSong.img != null ? currentSong.img : new Markup("").Overflow(Overflow.Ellipsis), VerticalAlignment.Middle));
+                AlbumDataPanel.Expand = true;
+                AlbumDataPanel.Header = new PanelHeader("┐" + textColor + "AlbumIMG[/]┌");
+                layout["AlbumCover"].Update(AlbumDataPanel);
+            } else {
+                layout["AlbumCover"].Invisible();
+            }
 
             AnsiConsole.Background = Spectre.Console.Color.Black;
 
-            //GenerateAudioSpectrum(1, 5, 46);
-            //GenerateAudioSpectrum(50, 5, 22);
-            //GenerateAudioSpectrum(74, 5, 23);
+            GenerateAudioSpectrum(1, 5, 46);
+            GenerateAudioSpectrum(50, 5, 22);
+            GenerateAudioSpectrum(74, 5, 23);
 
             // Render the layout
             AnsiConsole.Write(layout);
@@ -151,28 +153,21 @@ namespace NowPlayingTUI {
         
         internal void DrawIdle() {
             AnsiConsole.Clear();
-            var textColor = "[grey27]";
-
-            var MainPanel =
+            var leftPanel =
                     new Panel(
-            Align.Center(
-                            new Markup(textColor +Markup.Escape("Nothing Playing...") + "[/]")
+                        Align.Center(
+                            new Markup("[grey27]Nothing is playing[/]")
                                 .Overflow(Overflow.Ellipsis)
                                     ,VerticalAlignment.Middle));
-            MainPanel.Expand = true;
-
-
+            leftPanel.Expand = true;
+            leftPanel.Header = new PanelHeader("┐[grey27]Status[/]┌");
             var layout = new Layout("Root");
-
-            layout["Root"].Update(MainPanel);
+            layout["Root"].Update(leftPanel);
 
             AnsiConsole.Background = Spectre.Console.Color.Black;
-
-            //GenerateAudioSpectrumInactive(1, 5, 47);
-
             // Render the layout
             AnsiConsole.Write(layout);
-
+            ConsoleX.GenerateAudioSpectrumInactive(1, 5, 96);
             Console.SetCursorPosition(0, 0);
         }
 

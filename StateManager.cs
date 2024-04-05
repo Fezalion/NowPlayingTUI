@@ -240,6 +240,10 @@ namespace NowPlayingTUI {
                 int songDur = int.Parse(songDuration.FirstOrDefault() ?? "0");
 
                 // If we can't find an image URL, just use the default cover
+                artistName = artistName ?? "Unknown Artist";
+                trackTitle = trackTitle ?? "Unknown Title";
+                albumName = albumName ?? "Unknown Album";
+                imgUrl = imgUrl ?? null;
 
                 //Create Song object
                 if(imgUrl != null) {
@@ -254,7 +258,7 @@ namespace NowPlayingTUI {
                     CurrentSong = new Song() {
                         Title = trackTitle,
                         Album = albumName,
-                        img = new CanvasImage("defaultPic/400.png"),
+                        img = null,
                         timer = new SongTimer(songDur)
                     };
                 }

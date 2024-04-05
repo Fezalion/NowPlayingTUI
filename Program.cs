@@ -65,7 +65,7 @@ namespace NowPlayingTUI {
             [Option('y', "ycoord", Required = false, Default = 0)]
             public int y { get; set; }
 
-            [Option('w', "width", Required = false, Default = 810)]
+            [Option('w', "width", Required = false, Default = 800)]
             public int w { get; set; }
         }
 
@@ -77,7 +77,7 @@ namespace NowPlayingTUI {
                 .WithParsed(o => {
                     x = o.x;
                     y = o.y;
-                    w = Math.Clamp(o.w, 810, 1080);
+                    w = Math.Clamp(o.w, 800, 1080);
                 });
 
             Console.Title = "Now Playing TUI";

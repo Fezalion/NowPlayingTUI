@@ -9,16 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="defaultPic\400.png" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="defaultPic\400.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.9.1" />
     <PackageReference Include="Spectre.Console" Version="0.48.0" />
     <PackageReference Include="Spectre.Console.ImageSharp" Version="0.48.0" />

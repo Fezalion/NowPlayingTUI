@@ -35,6 +35,9 @@ namespace NowPlayingTUI {
                 string formattedEnd = MillisecondsToFormattedString(End);
 
                 string formattedString = $"{formattedElapsedTime}/{formattedEnd}";
+                if(end == 0) {
+                    formattedString = "";
+                }
 
                 ConsoleX.writeat(formattedString, 35, 0, Spectre.Console.Color.Lime);
                 ElapsedTime += 1000;
