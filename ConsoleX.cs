@@ -1,23 +1,27 @@
 ﻿using Spectre.Console;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using static NowPlayingTUI.StateManager;
 
-namespace NowPlayingTUI {
-    public class ConsoleX {
+namespace NowPlayingTUI
+{
+    public class ConsoleX
+    {
         private Table Table { get; set; }
 
-        public ConsoleX() {
+        public ConsoleX()
+        {
             Table = new Table();
         }
-        
-        public static void writeat(string s, int x, int y, Spectre.Console.Color color) {
-            try {
-                if(string.IsNullOrEmpty(s))
-                    return;
+
+        public static void WriteAt(string s, int x, int y, Spectre.Console.Color color)
+        {
+            if (string.IsNullOrEmpty(s))
+                return;
+
+            try
+            {
                 Console.SetCursorPosition(x - 1, y);
                 Console.Write("┐");
                 Console.ForegroundColor = color;
@@ -26,164 +30,111 @@ namespace NowPlayingTUI {
                 Console.SetCursorPosition(x + s.Length, y);
                 Console.ResetColor();
                 Console.Write("┌");
-
                 Console.SetCursorPosition(0, 0);
             }
-            catch(ArgumentOutOfRangeException e) {
-
-            }
+            catch (ArgumentOutOfRangeException) { }
         }
-        public static void GenerateAudioSpectrum(int x, int y, int width) {
 
-            string[] spectrumLevels = { "_" , ".", ":", "-", "=", "#" };
-
-            // Generate random seed
+        private static void GenerateSpectrum(int x, int y, int width, string[] spectrumLevels, Spectre.Console.Color color)
+        {
             Random random = new Random();
-
-            // Generate initial spectrum values
             int[] spectrum = new int[width];
             spectrum[0] = random.Next(spectrumLevels.Length - 1);
-            for(int i = 1; i < width; i++) {
-                int min = Math.Max(0, spectrum[i - 1] - 1); // Ensure next number is not less than 0
-                int max = Math.Min(spectrumLevels.Length - 1, spectrum[i - 1] + 1); // Ensure next number is not greater than 8
-
-                // Generate the next number
+            for (int i = 1; i < width; i++)
+            {
+                int min = Math.Max(0, spectrum[i - 1] - 1);
+                int max = Math.Min(spectrumLevels.Length - 1, spectrum[i - 1] + 1);
                 spectrum[i] = random.Next(min, max + 1);
             }
 
-            // Display the spectrum
-            for(int i = 0; i < width; i++) {
-                // Get the character representing the spectrum level
+            for (int i = 0; i < width; i++)
+            {
                 string character = spectrumLevels[spectrum[i]];
-                //string character = spectrum[i].ToString();
-
-                // Output the character at the specified position
                 Console.SetCursorPosition(x + i, y);
-                AnsiConsole.Write(new Markup(character, Style.WithForeground(Spectre.Console.Color.Lime)));
+                AnsiConsole.Write(new Markup(character, Style.WithForeground(color)));
             }
-
             Console.SetCursorPosition(0, 0);
         }
 
-        public static void GenerateAudioSpectrumInactive(int x, int y, int width) {
+        public static void GenerateAudioSpectrum(int x, int y, int width) =>
+            GenerateSpectrum(x, y, width, new[] { "_", ".", ":", "-", "=", "#" }, Spectre.Console.Color.Lime);
 
-            string[] spectrumLevels = { "_" , ".", ":" };
+        public static void GenerateAudioSpectrumInactive(int x, int y, int width) =>
+            GenerateSpectrum(x, y, width, new[] { "_", ".", ":" }, Spectre.Console.Color.Grey27);
 
-            // Generate random seed
-            Random random = new Random();
-
-            // Generate initial spectrum values
-            int[] spectrum = new int[width];
-            spectrum[0] = random.Next(spectrumLevels.Length - 1);
-            for(int i = 1; i < width; i++) {
-                int min = Math.Max(0, spectrum[i - 1] - 1); // Ensure next number is not less than 0
-                int max = Math.Min(spectrumLevels.Length - 1, spectrum[i - 1] + 1); // Ensure next number is not greater than 8
-
-                // Generate the next number
-                spectrum[i] = random.Next(min, max + 1);
-            }
-
-            // Display the spectrum
-            for(int i = 0; i < width; i++) {
-                // Get the character representing the spectrum level
-                string character = spectrumLevels[spectrum[i]];
-                //string character = spectrum[i].ToString();
-
-                // Output the character at the specified position
-                Console.SetCursorPosition(x + i, y);
-                AnsiConsole.Write(new Markup(character, Style.WithForeground(Spectre.Console.Color.Grey27)));
-            }
-
-            Console.SetCursorPosition(0, 0);
+        private void DrawPanel(string title, string content, string color, Layout layout, string panelKey)
+        {
+            var panel = new Panel(Align.Center(new Markup(color + Markup.Escape(content ?? "Not Found") + "[/]")
+                .Overflow(Overflow.Ellipsis), VerticalAlignment.Middle))
+            {
+                Expand = true,
+                Header = new PanelHeader("┐" + color + title + "[/]" + "┌")
+            };
+            layout[panelKey].Update(panel);
         }
 
-        internal void DrawPlaying(Song currentSong) {
+        internal void DrawPlaying(Song currentSong)
+        {
             AnsiConsole.Clear();
             var textColor = "[Lime]";
 
             var layout = new Layout("Root")
-                    .SplitColumns(
-                        new Layout("Left"),
-                                new Layout("Right")
-                                    .SplitColumns(
-                                        new Layout("Album"),
-                                                new Layout("AlbumCover")
-                                        ));
+                .SplitColumns(
+                    new Layout("Left"),
+                    new Layout("Right")
+                        .SplitColumns(
+                            new Layout("Album"),
+                            new Layout("AlbumCover")
+                        ));
 
-            var leftPanel =
-                    new Panel(
-                        Align.Center(
-                            new Markup(textColor +Markup.Escape(currentSong.Title ?? "Not Found") + "[/]")
-                                .Overflow(Overflow.Ellipsis)
-                                    ,VerticalAlignment.Middle));
-            leftPanel.Expand = true;
-            leftPanel.Header = new PanelHeader("┐" + textColor + "Current Song[/]┌");
+            DrawPanel("Current Song", currentSong.Title, textColor, layout, "Left");
+            DrawPanel("Album", currentSong.Album, textColor, layout, "Album");
 
-            var AlbumPanel = new Panel(Align.Center(new Markup(Markup.Escape(currentSong.Album ?? "Not Found")).Overflow(Overflow.Crop), VerticalAlignment.Middle));
-            AlbumPanel.Expand = true;
-            AlbumPanel.Header = new PanelHeader("┐" + textColor + "Album[/]┌");
-
-            layout["left"].Update(leftPanel);
-
-            layout["Album"].Update(AlbumPanel);
-
-            if(currentSong.img != null) {
+            if (currentSong.img != null)
+            {
                 currentSong.img.MaxWidth(3);
                 currentSong.img.BilinearResampler();
-
-                var AlbumDataPanel = new Panel(Align.Center(currentSong.img != null ? currentSong.img : new Markup("").Overflow(Overflow.Ellipsis), VerticalAlignment.Middle));
-                AlbumDataPanel.Expand = true;
-                AlbumDataPanel.Header = new PanelHeader("┐" + textColor + "AlbumIMG[/]┌");
-                layout["AlbumCover"].Update(AlbumDataPanel);
-            } else {
+                var albumDataPanel = new Panel(Align.Center(currentSong.img, VerticalAlignment.Middle))
+                {
+                    Expand = true,
+                    Header = new PanelHeader("┐" + textColor + "AlbumIMG[/]" + "┌")
+                };
+                layout["AlbumCover"].Update(albumDataPanel);
+            }
+            else
+            {
                 layout["AlbumCover"].Invisible();
             }
 
             AnsiConsole.Background = Spectre.Console.Color.Black;
-
-            // Render the layout
-            AnsiConsole.Write(layout);            
-
-            Console.SetCursorPosition(0, 0);
-        }
-        
-        internal void DrawIdle() {
-            AnsiConsole.Clear();
-            var leftPanel =
-                    new Panel(
-                        Align.Center(
-                            new Markup("[grey27]Nothing is playing[/]")
-                                .Overflow(Overflow.Ellipsis)
-                                    ,VerticalAlignment.Middle));
-            leftPanel.Expand = true;
-            leftPanel.Header = new PanelHeader("┐[grey27]Status[/]┌");
-            var layout = new Layout("Root");
-            layout["Root"].Update(leftPanel);
-
-            AnsiConsole.Background = Spectre.Console.Color.Black;
-            // Render the layout
             AnsiConsole.Write(layout);
-            ConsoleX.GenerateAudioSpectrumInactive(1, 5, 95);
             Console.SetCursorPosition(0, 0);
         }
 
-        internal void DrawEmpty() {
+        internal void DrawIdle()
+        {
+            DrawStatus("[grey27]Nothing is playing[/]", "[grey27]Status[/]", Spectre.Console.Color.Grey27);
+        }
+
+        internal void DrawEmpty()
+        {
+            DrawStatus("[grey27]Waiting For Spotify[/]", "[grey27]Status[/]", Spectre.Console.Color.Grey27);
+        }
+
+        private void DrawStatus(string message, string header, Spectre.Console.Color color)
+        {
             AnsiConsole.Clear();
-            var leftPanel =
-                    new Panel(
-                        Align.Center(
-                            new Markup("[grey27]Waiting For Spotify[/]")
-                                .Overflow(Overflow.Ellipsis)
-                                    ,VerticalAlignment.Middle));
-            leftPanel.Expand = true;
-            leftPanel.Header = new PanelHeader("┐[grey27]Status[/]┌");
+            var panel = new Panel(Align.Center(new Markup(message).Overflow(Overflow.Ellipsis), VerticalAlignment.Middle))
+            {
+                Expand = true,
+                Header = new PanelHeader("┐" + header + "┌")
+            };
             var layout = new Layout("Root");
-            layout["Root"].Update(leftPanel);
+            layout["Root"].Update(panel);
 
             AnsiConsole.Background = Spectre.Console.Color.Black;
-            // Render the layout
             AnsiConsole.Write(layout);
-            ConsoleX.GenerateAudioSpectrumInactive(1, 5, 95);
+            GenerateAudioSpectrumInactive(1, 5, 95);
             Console.SetCursorPosition(0, 0);
         }
     }
