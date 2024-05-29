@@ -14,6 +14,10 @@ There are some command line arguments you can use:
 	
 Example: `./NowPlayingTUI -x "-790" -y "0"`
 
+
+## Usage
+The program will ask you for a Last.fm API key on first launch which will be saved to .env file, which you can find [here](https://www.last.fm/api/accounts).
+
 ## Preview
 
 ### Playing
