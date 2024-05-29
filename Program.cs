@@ -38,7 +38,6 @@ namespace NowPlayingTUI
         [DllImport("user32.dll")]
         private static extern bool MoveWindow(IntPtr hWnd, int X, int Y, int nWidth, int nHeight, bool bRepaint);
 
-        public static SongTimer _songTimer;
         private StateManager _stateManager;
 
         private static void Main(string[] args)
@@ -99,7 +98,7 @@ namespace NowPlayingTUI
 
             uint style = GetWindowLong(consoleWindow, GWL_STYLE);
             style &= ~(WS_VSCROLL | WS_SYSMENU | WS_BORDER | WS_CAPTION | WS_HSCROLL | WS_THICKFRAME | WS_SIZEBOX);
-            style |= WS_BORDER;
+            //style |= WS_BORDER;
 
             SetWindowLong(consoleWindow, GWL_STYLE, style);
             SetWindowPos(consoleWindow, IntPtr.Zero, 0, 0, 0, 0, 0x0001 | 0x0002);

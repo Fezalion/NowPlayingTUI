@@ -18,7 +18,6 @@ namespace NowPlayingTUI
     {
         private static string _scrobblerApiKey;
         private readonly ConsoleX _console;
-        private readonly string defaultImgUrl = "https://placehold.co/100";
 
         public delegate State StateChangeHandler(State oldState, State newState);
         public event StateChangeHandler StateChanged;

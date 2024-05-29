@@ -61,7 +61,10 @@ namespace NowPlayingTUI
 
         public static void GenerateAudioSpectrumInactive(int x, int y, int width) =>
             GenerateSpectrum(x, y, width, new[] { "_", ".", ":" }, Spectre.Console.Color.Grey27);
-
+        public static void GenerateTimeDisplay(int x, int y, Spectre.Console.Color clr) {            
+            var time = DateTime.Now.ToString("HH:mm:ss - dd/MMM/yy - dddd");
+            WriteAt(time, x, y, clr);
+        }
         private void DrawPanel(string title, string content, string color, Layout layout, string panelKey)
         {
             var panel = new Panel(Align.Center(new Markup(color + Markup.Escape(content ?? "Not Found") + "[/]")
@@ -108,17 +111,21 @@ namespace NowPlayingTUI
 
             AnsiConsole.Background = Spectre.Console.Color.Black;
             AnsiConsole.Write(layout);
+
+            GenerateTimeDisplay(14, 6, Spectre.Console.Color.Lime);
             Console.SetCursorPosition(0, 0);
         }
 
         internal void DrawIdle()
         {
             DrawStatus("[grey27]Nothing is playing[/]", "[grey27]Status[/]", Spectre.Console.Color.Grey27);
+            GenerateTimeDisplay(50,6, Spectre.Console.Color.Grey27);
         }
 
         internal void DrawEmpty()
         {
             DrawStatus("[grey27]Waiting For Spotify[/]", "[grey27]Status[/]", Spectre.Console.Color.Grey27);
+            GenerateTimeDisplay(50, 6, Spectre.Console.Color.Grey27);
         }
 
         private void DrawStatus(string message, string header, Spectre.Console.Color color)
