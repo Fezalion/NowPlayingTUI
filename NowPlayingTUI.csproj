@@ -14,4 +14,8 @@
     <PackageReference Include="Spectre.Console.ImageSharp" Version="0.48.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="github\" />
+  </ItemGroup>
+
 </Project>

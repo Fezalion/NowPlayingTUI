@@ -34,6 +34,23 @@ namespace NowPlayingTUI
             }
             catch (ArgumentOutOfRangeException) { }
         }
+        public static void WriteAtDown(string s, int x, int y, Spectre.Console.Color color) {
+            if(string.IsNullOrEmpty(s))
+                return;
+
+            try {
+                Console.SetCursorPosition(x - 1, y);
+                Console.Write("┐");
+                Console.ForegroundColor = color;
+                Console.SetCursorPosition(x, y);
+                Console.Write(s);
+                Console.SetCursorPosition(x + s.Length, y);
+                Console.ResetColor();
+                Console.Write("┌");
+                Console.SetCursorPosition(0, 0);
+            }
+            catch(ArgumentOutOfRangeException) { }
+        }
 
         private static void GenerateSpectrum(int x, int y, int width, string[] spectrumLevels, Spectre.Console.Color color)
         {
@@ -63,7 +80,7 @@ namespace NowPlayingTUI
             GenerateSpectrum(x, y, width, new[] { "_", ".", ":" }, Spectre.Console.Color.Grey27);
         public static void GenerateTimeDisplay(int x, int y, Spectre.Console.Color clr) {            
             var time = DateTime.Now.ToString("HH:mm:ss - dd/MMM/yy - dddd");
-            WriteAt(time, x, y, clr);
+            WriteAtDown(time, x, y, clr);
         }
         private void DrawPanel(string title, string content, string color, Layout layout, string panelKey)
         {
