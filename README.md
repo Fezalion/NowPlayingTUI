@@ -9,8 +9,8 @@ Either clone the repository and build the project ~~or download the latest relea
 Run the program with `./NowPlayingTUI` or `NowPlayingTUI.exe` on Windows.
 
 There are some command line arguments you can use:
-	--x, --xcoord: Set the x position of the window
-	--y, --ycoord: Set the y position of the window
+-	`--x, --xcoord`: Set the x position of the window
+-	`--y, --ycoord`: Set the y position of the window
 
 ## Preview
 
