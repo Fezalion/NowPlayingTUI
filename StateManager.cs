@@ -173,6 +173,7 @@ namespace NowPlayingTUI {
 
                             case "Spotify":
                             case "Spotify Free":
+                            case "Spotify Premium":
                                 CurrentState = State.Idle;
                                 break;
                             default:
