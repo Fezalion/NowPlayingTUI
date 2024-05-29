@@ -1,6 +1,0 @@
-# configuration file for dotnet-releaser
-[msbuild]
-project = "NowPlayingTUI.sln"
-[github]
-user = "Fezalion"
-repo = "NowPlayingTUI"
