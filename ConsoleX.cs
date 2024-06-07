@@ -23,13 +23,11 @@ namespace NowPlayingTUI
             try
             {
                 Console.SetCursorPosition(x - 1, y);
-                Console.Write("┐");
-                Console.ForegroundColor = color;
+                AnsiConsole.Write(new Markup("[grey39]┐[/]"));
                 Console.SetCursorPosition(x, y);
-                Console.Write(s);
+                AnsiConsole.Write(new Markup(s, new Style(foreground: color)).Overflow(Overflow.Ellipsis));
                 Console.SetCursorPosition(x + s.Length, y);
-                Console.ResetColor();
-                Console.Write("┌");
+                AnsiConsole.Write(new Markup("[grey39]┌[/]"));
                 Console.SetCursorPosition(0, 0);
             }
             catch (ArgumentOutOfRangeException) { }
@@ -40,13 +38,11 @@ namespace NowPlayingTUI
 
             try {
                 Console.SetCursorPosition(x - 1, y);
-                Console.Write("┐");
-                Console.ForegroundColor = color;
+                AnsiConsole.Write(new Markup("[grey39]┐[/]"));
                 Console.SetCursorPosition(x, y);
-                Console.Write(s);
+                AnsiConsole.Write(new Markup(s, new Style(foreground: color)).Overflow(Overflow.Ellipsis));
                 Console.SetCursorPosition(x + s.Length, y);
-                Console.ResetColor();
-                Console.Write("┌");
+                AnsiConsole.Write(new Markup("[grey39]┌[/]"));
                 Console.SetCursorPosition(0, 0);
             }
             catch(ArgumentOutOfRangeException) { }
@@ -68,7 +64,7 @@ namespace NowPlayingTUI
             {
                 string character = spectrumLevels[spectrum[i]];
                 Console.SetCursorPosition(x + i, y);
-                AnsiConsole.Write(new Markup(character, Style.WithForeground(color)));
+                AnsiConsole.Write(new Markup(character, new Style(foreground: color)));
             }
             Console.SetCursorPosition(0, 0);
         }
@@ -77,7 +73,7 @@ namespace NowPlayingTUI
             GenerateSpectrum(x, y, width, new[] { "_", ".", ":", "-", "=", "#" }, Spectre.Console.Color.Lime);
 
         public static void GenerateAudioSpectrumInactive(int x, int y, int width) =>
-            GenerateSpectrum(x, y, width, new[] { "_", ".", ":" }, Spectre.Console.Color.Grey27);
+            GenerateSpectrum(x, y, width, new[] { "_", ".", ":" }, Spectre.Console.Color.RoyalBlue1);
         public static void GenerateTimeDisplay(int x, int y, Spectre.Console.Color clr) {            
             var time = DateTime.Now.ToString("HH:mm:ss - dd/MMM/yy - dddd");
             WriteAtDown(time, x, y, clr);
@@ -88,14 +84,14 @@ namespace NowPlayingTUI
                 .Overflow(Overflow.Ellipsis), VerticalAlignment.Middle))
             {
                 Expand = true,
-                Header = new PanelHeader("┐" + color + title + "[/]" + "┌")
+                Header = new PanelHeader("[grey39]┐[/]" + color + title + "[/]" + "[grey39]┌[/]"),
+                BorderStyle = new Style(foreground: Spectre.Console.Color.Grey39)
             };
             layout[panelKey].Update(panel);
         }
 
         internal void DrawPlaying(Song currentSong)
         {
-            AnsiConsole.Clear();
             var textColor = "[Lime]";
 
             var layout = new Layout("Root")
@@ -117,7 +113,8 @@ namespace NowPlayingTUI
                 var albumDataPanel = new Panel(Align.Center(currentSong.img, VerticalAlignment.Middle))
                 {
                     Expand = true,
-                    Header = new PanelHeader("┐" + textColor + "AlbumIMG[/]" + "┌")
+                    Header = new PanelHeader("[grey39]┐[/]" + textColor + "AlbumIMG[/]" + "[grey39]┌[/]"),
+                    BorderStyle = new Style(foreground: Spectre.Console.Color.Grey39)
                 };
                 layout["AlbumCover"].Update(albumDataPanel);
             }
@@ -135,30 +132,30 @@ namespace NowPlayingTUI
 
         internal void DrawIdle()
         {
-            DrawStatus("[grey27]Nothing is playing[/]", "[grey27]Status[/]", Spectre.Console.Color.Grey27);
-            GenerateTimeDisplay(50,6, Spectre.Console.Color.Grey27);
+            DrawStatus("[royalblue1]Nothing is playing[/]", "[royalblue1]Status[/]", Spectre.Console.Color.RoyalBlue1);
+            GenerateTimeDisplay(50,6, Spectre.Console.Color.RoyalBlue1);
         }
 
         internal void DrawEmpty()
         {
-            DrawStatus("[grey27]Waiting For Spotify[/]", "[grey27]Status[/]", Spectre.Console.Color.Grey27);
-            GenerateTimeDisplay(50, 6, Spectre.Console.Color.Grey27);
+            DrawStatus("[royalblue1]Waiting For Spotify[/]", "[royalblue1]Status[/]", Spectre.Console.Color.RoyalBlue1);
+            GenerateTimeDisplay(50, 6, Spectre.Console.Color.RoyalBlue1);
         }
 
         private void DrawStatus(string message, string header, Spectre.Console.Color color)
         {
-            AnsiConsole.Clear();
             var panel = new Panel(Align.Center(new Markup(message).Overflow(Overflow.Ellipsis), VerticalAlignment.Middle))
             {
                 Expand = true,
-                Header = new PanelHeader("┐" + header + "┌")
+                Header = new PanelHeader("[grey39]┐[/]" + header + "[grey39]┌[/]"),
+                BorderStyle = new Style(foreground: Spectre.Console.Color.Grey39)
             };
             var layout = new Layout("Root");
             layout["Root"].Update(panel);
 
             AnsiConsole.Background = Spectre.Console.Color.Black;
             AnsiConsole.Write(layout);
-            GenerateAudioSpectrumInactive(1, 5, 95);
+            GenerateAudioSpectrumInactive(1, 5, 97);
             Console.SetCursorPosition(0, 0);
         }
     }
