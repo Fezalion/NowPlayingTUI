@@ -2,150 +2,261 @@
   "version": 3,
   "targets": {
     "net7.0": {
-      "CommandLineParser/2.9.1": {
+      "NStack.Core/1.1.1": {
         "type": "package",
+        "dependencies": {
+          "System.ValueTuple": "4.5.0"
+        },
         "compile": {
-          "lib/netstandard2.0/CommandLine.dll": {
-            "related": ".xml"
-          }
+          "lib/netstandard2.0/NStack.dll": {}
         },
         "runtime": {
-          "lib/netstandard2.0/CommandLine.dll": {
-            "related": ".xml"
-          }
+          "lib/netstandard2.0/NStack.dll": {}
         }
       },
-      "SixLabors.ImageSharp/3.1.4": {
+      "System.CodeDom/8.0.0": {
         "type": "package",
         "compile": {
-          "lib/net6.0/SixLabors.ImageSharp.dll": {
+          "lib/net7.0/System.CodeDom.dll": {
             "related": ".xml"
           }
         },
         "runtime": {
-          "lib/net6.0/SixLabors.ImageSharp.dll": {
+          "lib/net7.0/System.CodeDom.dll": {
             "related": ".xml"
           }
         },
         "build": {
-          "build/_._": {}
+          "buildTransitive/net6.0/_._": {}
         }
       },
-      "Spectre.Console/0.49.1": {
-        "type": "package",
-        "compile": {
-          "lib/net7.0/Spectre.Console.dll": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/net7.0/Spectre.Console.dll": {
-            "related": ".xml"
-          }
-        }
-      },
-      "Spectre.Console.ImageSharp/0.49.1": {
+      "System.Management/8.0.0": {
         "type": "package",
         "dependencies": {
-          "SixLabors.ImageSharp": "3.1.4",
-          "Spectre.Console": "0.49.1"
+          "System.CodeDom": "8.0.0"
         },
         "compile": {
-          "lib/net7.0/Spectre.Console.ImageSharp.dll": {
+          "lib/net7.0/System.Management.dll": {
             "related": ".xml"
           }
         },
         "runtime": {
-          "lib/net7.0/Spectre.Console.ImageSharp.dll": {
+          "lib/net7.0/System.Management.dll": {
             "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/net6.0/_._": {}
+        },
+        "runtimeTargets": {
+          "runtimes/win/lib/net7.0/System.Management.dll": {
+            "assetType": "runtime",
+            "rid": "win"
+          }
+        }
+      },
+      "System.ValueTuple/4.5.0": {
+        "type": "package",
+        "compile": {
+          "ref/netcoreapp2.0/_._": {}
+        },
+        "runtime": {
+          "lib/netcoreapp2.0/_._": {}
+        }
+      },
+      "Terminal.Gui/1.17.0": {
+        "type": "package",
+        "dependencies": {
+          "NStack.Core": "1.1.1",
+          "System.Management": "8.0.0"
+        },
+        "compile": {
+          "lib/net7.0/Terminal.Gui.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net7.0/Terminal.Gui.dll": {
+            "related": ".xml"
+          }
+        },
+        "resource": {
+          "lib/net7.0/fr-FR/Terminal.Gui.resources.dll": {
+            "locale": "fr-FR"
+          },
+          "lib/net7.0/ja-JP/Terminal.Gui.resources.dll": {
+            "locale": "ja-JP"
+          },
+          "lib/net7.0/pt-PT/Terminal.Gui.resources.dll": {
+            "locale": "pt-PT"
           }
         }
       }
     }
   },
   "libraries": {
-    "CommandLineParser/2.9.1": {
-      "sha512": "OE0sl1/sQ37bjVsPKKtwQlWDgqaxWgtme3xZz7JssWUzg5JpMIyHgCTY9MVMxOg48fJ1AgGT3tgdH5m/kQ5xhA==",
+    "NStack.Core/1.1.1": {
+      "sha512": "5LhlYsmAe3A55zl8xCSD7AbuhDqZODpsfdMGgtygeBlHZmlb0tHmK5/PeKODnwYUhC6EbL2qHKGskPNvpY+z3w==",
       "type": "package",
-      "path": "commandlineparser/2.9.1",
+      "path": "nstack.core/1.1.1",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
-        "CommandLine20.png",
-        "License.md",
         "README.md",
-        "commandlineparser.2.9.1.nupkg.sha512",
-        "commandlineparser.nuspec",
-        "lib/net40/CommandLine.dll",
-        "lib/net40/CommandLine.xml",
-        "lib/net45/CommandLine.dll",
-        "lib/net45/CommandLine.xml",
-        "lib/net461/CommandLine.dll",
-        "lib/net461/CommandLine.xml",
-        "lib/netstandard2.0/CommandLine.dll",
-        "lib/netstandard2.0/CommandLine.xml"
+        "lib/netstandard2.0/NStack.dll",
+        "logo48.png",
+        "nstack.core.1.1.1.nupkg.sha512",
+        "nstack.core.nuspec"
       ]
     },
-    "SixLabors.ImageSharp/3.1.4": {
-      "sha512": "lFIdxgGDA5iYkUMRFOze7BGLcdpoLFbR+a20kc1W7NepvzU7ejtxtWOg9RvgG7kb9tBoJ3ONYOK6kLil/dgF1w==",
+    "System.CodeDom/8.0.0": {
+      "sha512": "WTlRjL6KWIMr/pAaq3rYqh0TJlzpouaQ/W1eelssHgtlwHAH25jXTkUphTYx9HaIIf7XA6qs/0+YhtLEQRkJ+Q==",
       "type": "package",
-      "path": "sixlabors.imagesharp/3.1.4",
+      "path": "system.codedom/8.0.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
-        "LICENSE",
-        "build/SixLabors.ImageSharp.props",
-        "lib/net6.0/SixLabors.ImageSharp.dll",
-        "lib/net6.0/SixLabors.ImageSharp.xml",
-        "sixlabors.imagesharp.128.png",
-        "sixlabors.imagesharp.3.1.4.nupkg.sha512",
-        "sixlabors.imagesharp.nuspec"
+        "Icon.png",
+        "LICENSE.TXT",
+        "THIRD-PARTY-NOTICES.TXT",
+        "buildTransitive/net461/System.CodeDom.targets",
+        "buildTransitive/net462/_._",
+        "buildTransitive/net6.0/_._",
+        "buildTransitive/netcoreapp2.0/System.CodeDom.targets",
+        "lib/net462/System.CodeDom.dll",
+        "lib/net462/System.CodeDom.xml",
+        "lib/net6.0/System.CodeDom.dll",
+        "lib/net6.0/System.CodeDom.xml",
+        "lib/net7.0/System.CodeDom.dll",
+        "lib/net7.0/System.CodeDom.xml",
+        "lib/net8.0/System.CodeDom.dll",
+        "lib/net8.0/System.CodeDom.xml",
+        "lib/netstandard2.0/System.CodeDom.dll",
+        "lib/netstandard2.0/System.CodeDom.xml",
+        "system.codedom.8.0.0.nupkg.sha512",
+        "system.codedom.nuspec",
+        "useSharedDesignerContext.txt"
       ]
     },
-    "Spectre.Console/0.49.1": {
-      "sha512": "USV+pdu49OJ3nCjxNuw1K9Zw/c1HCBbwbjXZp0EOn6wM99tFdAtN34KEBZUMyRuJuXlUMDqhd8Yq9obW2MslYA==",
+    "System.Management/8.0.0": {
+      "sha512": "jrK22i5LRzxZCfGb+tGmke2VH7oE0DvcDlJ1HAKYU8cPmD8XnpUT0bYn2Gy98GEhGjtfbR/sxKTVb+dE770pfA==",
       "type": "package",
-      "path": "spectre.console/0.49.1",
+      "path": "system.management/8.0.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
-        "lib/net6.0/Spectre.Console.dll",
-        "lib/net6.0/Spectre.Console.xml",
-        "lib/net7.0/Spectre.Console.dll",
-        "lib/net7.0/Spectre.Console.xml",
-        "lib/net8.0/Spectre.Console.dll",
-        "lib/net8.0/Spectre.Console.xml",
-        "lib/netstandard2.0/Spectre.Console.dll",
-        "lib/netstandard2.0/Spectre.Console.xml",
-        "small-logo.png",
-        "spectre.console.0.49.1.nupkg.sha512",
-        "spectre.console.nuspec"
+        "Icon.png",
+        "LICENSE.TXT",
+        "PACKAGE.md",
+        "THIRD-PARTY-NOTICES.TXT",
+        "buildTransitive/net6.0/_._",
+        "buildTransitive/netcoreapp2.0/System.Management.targets",
+        "lib/net462/_._",
+        "lib/net6.0/System.Management.dll",
+        "lib/net6.0/System.Management.xml",
+        "lib/net7.0/System.Management.dll",
+        "lib/net7.0/System.Management.xml",
+        "lib/net8.0/System.Management.dll",
+        "lib/net8.0/System.Management.xml",
+        "lib/netstandard2.0/System.Management.dll",
+        "lib/netstandard2.0/System.Management.xml",
+        "runtimes/win/lib/net6.0/System.Management.dll",
+        "runtimes/win/lib/net6.0/System.Management.xml",
+        "runtimes/win/lib/net7.0/System.Management.dll",
+        "runtimes/win/lib/net7.0/System.Management.xml",
+        "runtimes/win/lib/net8.0/System.Management.dll",
+        "runtimes/win/lib/net8.0/System.Management.xml",
+        "system.management.8.0.0.nupkg.sha512",
+        "system.management.nuspec",
+        "useSharedDesignerContext.txt"
       ]
     },
-    "Spectre.Console.ImageSharp/0.49.1": {
-      "sha512": "GCqe0F6G/zGuhesbizzufOR2ZG9L4Fy9GPCrcRi2gT6HbbJMeVlzD+OjOp1PhZOrUwzhqaOAqkhSIAtRtincwQ==",
+    "System.ValueTuple/4.5.0": {
+      "sha512": "okurQJO6NRE/apDIP23ajJ0hpiNmJ+f0BwOlB/cSqTLQlw5upkf+5+96+iG2Jw40G1fCVCyPz/FhIABUjMR+RQ==",
       "type": "package",
-      "path": "spectre.console.imagesharp/0.49.1",
+      "path": "system.valuetuple/4.5.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
-        "lib/net6.0/Spectre.Console.ImageSharp.dll",
-        "lib/net6.0/Spectre.Console.ImageSharp.xml",
-        "lib/net7.0/Spectre.Console.ImageSharp.dll",
-        "lib/net7.0/Spectre.Console.ImageSharp.xml",
-        "lib/net8.0/Spectre.Console.ImageSharp.dll",
-        "lib/net8.0/Spectre.Console.ImageSharp.xml",
-        "small-logo.png",
-        "spectre.console.imagesharp.0.49.1.nupkg.sha512",
-        "spectre.console.imagesharp.nuspec"
+        "LICENSE.TXT",
+        "THIRD-PARTY-NOTICES.TXT",
+        "lib/MonoAndroid10/_._",
+        "lib/MonoTouch10/_._",
+        "lib/net461/System.ValueTuple.dll",
+        "lib/net461/System.ValueTuple.xml",
+        "lib/net47/System.ValueTuple.dll",
+        "lib/net47/System.ValueTuple.xml",
+        "lib/netcoreapp2.0/_._",
+        "lib/netstandard1.0/System.ValueTuple.dll",
+        "lib/netstandard1.0/System.ValueTuple.xml",
+        "lib/netstandard2.0/_._",
+        "lib/portable-net40+sl4+win8+wp8/System.ValueTuple.dll",
+        "lib/portable-net40+sl4+win8+wp8/System.ValueTuple.xml",
+        "lib/uap10.0.16299/_._",
+        "lib/xamarinios10/_._",
+        "lib/xamarinmac20/_._",
+        "lib/xamarintvos10/_._",
+        "lib/xamarinwatchos10/_._",
+        "ref/MonoAndroid10/_._",
+        "ref/MonoTouch10/_._",
+        "ref/net461/System.ValueTuple.dll",
+        "ref/net47/System.ValueTuple.dll",
+        "ref/netcoreapp2.0/_._",
+        "ref/netstandard2.0/_._",
+        "ref/portable-net40+sl4+win8+wp8/System.ValueTuple.dll",
+        "ref/uap10.0.16299/_._",
+        "ref/xamarinios10/_._",
+        "ref/xamarinmac20/_._",
+        "ref/xamarintvos10/_._",
+        "ref/xamarinwatchos10/_._",
+        "system.valuetuple.4.5.0.nupkg.sha512",
+        "system.valuetuple.nuspec",
+        "useSharedDesignerContext.txt",
+        "version.txt"
+      ]
+    },
+    "Terminal.Gui/1.17.0": {
+      "sha512": "EkFDIpkFuWV/TVW2ZX2SKnctZ/GIhpLQfyLAQ/UW076AwxX5vI6w8RhznH1+/33h+o9Jyw+JSo5u6t71WuZMiQ==",
+      "type": "package",
+      "path": "terminal.gui/1.17.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "lib/net472/Terminal.Gui.dll",
+        "lib/net472/Terminal.Gui.xml",
+        "lib/net472/fr-FR/Terminal.Gui.resources.dll",
+        "lib/net472/ja-JP/Terminal.Gui.resources.dll",
+        "lib/net472/pt-PT/Terminal.Gui.resources.dll",
+        "lib/net7.0/Terminal.Gui.dll",
+        "lib/net7.0/Terminal.Gui.xml",
+        "lib/net7.0/fr-FR/Terminal.Gui.resources.dll",
+        "lib/net7.0/ja-JP/Terminal.Gui.resources.dll",
+        "lib/net7.0/pt-PT/Terminal.Gui.resources.dll",
+        "lib/net8.0/Terminal.Gui.dll",
+        "lib/net8.0/Terminal.Gui.xml",
+        "lib/net8.0/fr-FR/Terminal.Gui.resources.dll",
+        "lib/net8.0/ja-JP/Terminal.Gui.resources.dll",
+        "lib/net8.0/pt-PT/Terminal.Gui.resources.dll",
+        "lib/netstandard2.0/Terminal.Gui.dll",
+        "lib/netstandard2.0/Terminal.Gui.xml",
+        "lib/netstandard2.0/fr-FR/Terminal.Gui.resources.dll",
+        "lib/netstandard2.0/ja-JP/Terminal.Gui.resources.dll",
+        "lib/netstandard2.0/pt-PT/Terminal.Gui.resources.dll",
+        "lib/netstandard2.1/Terminal.Gui.dll",
+        "lib/netstandard2.1/Terminal.Gui.xml",
+        "lib/netstandard2.1/fr-FR/Terminal.Gui.resources.dll",
+        "lib/netstandard2.1/ja-JP/Terminal.Gui.resources.dll",
+        "lib/netstandard2.1/pt-PT/Terminal.Gui.resources.dll",
+        "logo.png",
+        "terminal.gui.1.17.0.nupkg.sha512",
+        "terminal.gui.nuspec"
       ]
     }
   },
   "projectFileDependencyGroups": {
     "net7.0": [
-      "CommandLineParser >= 2.9.1",
-      "Spectre.Console >= 0.49.1",
-      "Spectre.Console.ImageSharp >= 0.49.1"
+      "Terminal.Gui >= 1.17.0"
     ]
   },
   "packageFolders": {
@@ -192,17 +303,9 @@
       "net7.0": {
         "targetAlias": "net7.0",
         "dependencies": {
-          "CommandLineParser": {
+          "Terminal.Gui": {
             "target": "Package",
-            "version": "[2.9.1, )"
-          },
-          "Spectre.Console": {
-            "target": "Package",
-            "version": "[0.49.1, )"
-          },
-          "Spectre.Console.ImageSharp": {
-            "target": "Package",
-            "version": "[0.49.1, )"
+            "version": "[1.17.0, )"
           }
         },
         "imports": [

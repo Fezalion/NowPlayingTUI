@@ -1,6 +1,5 @@
 ﻿using NowPlayingTUI.Enums;
 using NowPlayingTUI.Helpers;
-using Spectre.Console;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,6 +10,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Xml.Linq;
 using System.Xml.XPath;
+using Terminal.Gui;
 
 namespace NowPlayingTUI {
     public class StateManager {
@@ -26,8 +26,6 @@ namespace NowPlayingTUI {
         public struct Song {
             public string Title;
             public string Album;
-            public CanvasImage img;
-            public SongTimer timer;
         }
 
         private Song _song;
@@ -50,35 +48,42 @@ namespace NowPlayingTUI {
             }
         }
 
-        public StateManager() {
+        private Toplevel _top;
+        public Toplevel Top {
+            get => _top;
+            set => _top = value;
+        }
+
+        public StateManager(Toplevel top) {
             CurrentState = State.NoSpotify;
             _console = new ConsoleX();
             StateChanged += OnStateChanged;
             SongChanged += OnSongChanged;
+            Top = top;
         }
 
         private Song OnSongChanged(Song oldSong, Song newSong) {
-            oldSong.timer?.StopTimer();
             CurrentState = State.Playing;
             return newSong;
         }
 
         private State OnStateChanged(State oldState, State newState) {
-            if(CurrentSong.timer != null)
-                CurrentSong.timer.StopTimer();
+
+           // if(oldState == newState)
+           //     return newState;
 
             switch(newState) {
                 case State.NoSpotify:
-                    _console.DrawEmpty();
+                    _console.DrawEmpty(Top);
                     break;
                 case State.Playing:
-                    _console.DrawPlaying(CurrentSong);
+                    _console.DrawPlaying(Top, CurrentSong);
                     break;
                 case State.Idle:
-                    _console.DrawIdle();
+                    _console.DrawIdle(Top);
                     break;
                 default:
-                    _console.DrawEmpty();
+                    _console.DrawEmpty(Top);
                     break;
             }
             return newState;
@@ -86,7 +91,7 @@ namespace NowPlayingTUI {
 
         public async Task Start() {
             LoadApiKey();
-
+            MonitorSpotify();
             string url = BuildTrackInfoUrl("cher", "believe");
             try {
                 await FetchTrackInfoAsync(url);
@@ -95,8 +100,6 @@ namespace NowPlayingTUI {
                 await HandleApiFailureAsync();
                 return;
             }
-
-            MonitorSpotify();
         }
 
         private void LoadApiKey() {
@@ -107,16 +110,91 @@ namespace NowPlayingTUI {
             _scrobblerApiKey = Environment.GetEnvironmentVariable("SCROBBLER_API_KEY") ?? PromptForApiKey(dotenv);
         }
 
-        private string PromptForApiKey(string dotenv) {
-            var apikey = AnsiConsole.Prompt(
-                new TextPrompt<string>("Enter [lime]scrobbler api key[/]:")
-                    .PromptStyle("red")
-                    .Secret()
-                    .Validate(key => key.Length > 0 ? ValidationResult.Success() : ValidationResult.Error("Please enter a valid scrobbler api key"))
-            );
+        private static string PromptForApiKey(string dotenv) {
+            var dialog = new Dialog("Enter API Key", 60, 20);
 
-            DotEnv.Write(dotenv, apikey);
-            return apikey;
+            var label = new Label("Enter scrobbler API key:")
+            {
+                X = Pos.Center(),
+                Y = 1
+            };
+            dialog.Add(label);
+
+            var textField = new TextField("")
+            {
+                Secret = true,
+                X = Pos.Center(),
+                Y = Pos.Bottom(label) + 1,
+                Width = 40
+            };
+            dialog.Add(textField);
+
+            string apiKey = null;
+            var okButton = new Button("OK")
+            {
+                X = Pos.Center() - 10,
+                Y = Pos.Bottom(textField) + 2,
+                IsDefault = true
+            };
+            okButton.Clicked += () => {
+                if(ValidateApiKey(textField.Text.ToString())) {
+                    apiKey = textField.Text.ToString();
+                    Application.RequestStop();
+                }
+                else {
+                    MessageBox.ErrorQuery("Validation Error", "Please enter a valid scrobbler API key.", "OK");
+                }
+            };
+            dialog.Add(okButton);
+
+            var cancelButton = new Button("Cancel")
+            {
+                X = Pos.Center() + 10,
+                Y = Pos.Bottom(textField) + 2
+            };
+            cancelButton.Clicked += () => {
+                apiKey = null;
+                Application.RequestStop();
+            };
+            dialog.Add(cancelButton);
+
+            Application.Run(dialog);
+
+            if(apiKey != null) {
+                DotEnv.Write(dotenv, apiKey);
+            }
+            return apiKey;
+        }
+
+        static bool ValidateApiKey(string key) {
+            return !string.IsNullOrEmpty(key);
+        }
+
+        private static async Task HandleApiFailureAsync() {
+            var dialog = new Dialog("API Failure", 60, 8, new Button("Ok"));
+            var messageLabel = new Label("Api does not respond, check api key or last.fm api status.")
+            {
+                X = Pos.Center(),
+                Y = 1
+            };
+            dialog.Add(messageLabel);
+
+            var countdownLabel = new Label("Application will quit in 15 seconds")
+            {
+                X = Pos.Center(),
+                Y = Pos.Bottom(messageLabel) + 1
+            };
+            dialog.Add(countdownLabel);
+
+            Application.Run(dialog); // Show dialog
+
+            for(int i = 15; i > 0; i--) {
+                countdownLabel.Text = $"Application will quit in {i} seconds";
+                Application.Refresh();
+                await Task.Delay(1000);
+            }
+
+            Environment.Exit(0);
         }
 
         private string BuildTrackInfoUrl(string artist, string title) {
@@ -131,19 +209,6 @@ namespace NowPlayingTUI {
             string xml = await client.DownloadStringTaskAsync(url);
             XDocument xmlDoc = XDocument.Load(new StringReader(xml));
             var trackTitle = xmlDoc.XPathSelectElement("//track/name")?.Value;
-        }
-
-        private async Task HandleApiFailureAsync() {
-            await AnsiConsole.Status()
-                .Spinner(Spinner.Known.Ascii)
-                .SpinnerStyle(Style.Parse("bold red"))
-                .StartAsync("Api does not respond, check api key or last.fm api status. (Application will quit in 15 seconds)", async ctx => {
-                    for(int i = 15; i > 0; i--) {
-                        ctx.Status($"Application will quit in {i} seconds");
-                        await Task.Delay(1000);
-                    }
-                    Environment.Exit(0);
-                });
         }
 
         private void MonitorSpotify() {
@@ -170,7 +235,6 @@ namespace NowPlayingTUI {
 
                         string title = spotifyProcess.MainWindowTitle;
                         switch(title) {
-
                             case "Spotify":
                             case "Spotify Free":
                             case "Spotify Premium":
@@ -216,8 +280,7 @@ namespace NowPlayingTUI {
             CurrentSong = new Song {
                 Title = $"{artistName} - {trackTitle}",
                 Album = albumName,
-                img = !string.IsNullOrEmpty(imgUrl) ? new CanvasImage(new WebClient().DownloadData(imgUrl)) : null,
-                timer = new SongTimer(songDur)
+                // img = !string.IsNullOrEmpty(imgUrl) ? new CanvasImage(new WebClient().DownloadData(imgUrl)) : null
             };
         }
 

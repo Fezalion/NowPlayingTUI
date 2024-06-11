@@ -1,162 +1,136 @@
-﻿using Spectre.Console;
-using System;
+﻿using System;
 using System.Linq;
+using System.Reflection.PortableExecutable;
 using System.Text;
+using Terminal.Gui;
 using static NowPlayingTUI.StateManager;
 
 namespace NowPlayingTUI
 {
     public class ConsoleX
     {
-        private Table Table { get; set; }
 
-        public ConsoleX()
-        {
-            Table = new Table();
-        }
-
-        public static void WriteAt(string s, int x, int y, Spectre.Console.Color color)
+        private ColorScheme _COLORSCHEME = new ColorScheme {
+            Normal = Terminal.Gui.Attribute.Make(Color.BrightBlue, Color.Black),
+            Focus = Terminal.Gui.Attribute.Make(Color.BrightYellow, Color.Black),
+            HotNormal = Terminal.Gui.Attribute.Make(Color.BrightYellow, Color.Black),
+            HotFocus = Terminal.Gui.Attribute.Make(Color.BrightYellow, Color.Black),
+            Disabled = Terminal.Gui.Attribute.Make(Color.BrightYellow, Color.Black)
+        };
+        public static void WriteAt(string s, int x, int y)
         {
             if (string.IsNullOrEmpty(s))
                 return;
 
             try
             {
-                Console.SetCursorPosition(x - 1, y);
-                AnsiConsole.Write(new Markup("[grey39]┐[/]"));
-                Console.SetCursorPosition(x, y);
-                AnsiConsole.Write(new Markup(s, new Style(foreground: color)).Overflow(Overflow.Ellipsis));
-                Console.SetCursorPosition(x + s.Length, y);
-                AnsiConsole.Write(new Markup("[grey39]┌[/]"));
-                Console.SetCursorPosition(0, 0);
+                //TODO: Fix this
+                return;
             }
             catch (ArgumentOutOfRangeException) { }
         }
-        public static void WriteAtDown(string s, int x, int y, Spectre.Console.Color color) {
+        public static void WriteAtDown(string s, int x, int y) {
             if(string.IsNullOrEmpty(s))
                 return;
 
             try {
-                Console.SetCursorPosition(x - 1, y);
-                AnsiConsole.Write(new Markup("[grey39]┐[/]"));
-                Console.SetCursorPosition(x, y);
-                AnsiConsole.Write(new Markup(s, new Style(foreground: color)).Overflow(Overflow.Ellipsis));
-                Console.SetCursorPosition(x + s.Length, y);
-                AnsiConsole.Write(new Markup("[grey39]┌[/]"));
-                Console.SetCursorPosition(0, 0);
+                //TODO: Fix this
+                return;
             }
             catch(ArgumentOutOfRangeException) { }
         }
 
-        private static void GenerateSpectrum(int x, int y, int width, string[] spectrumLevels, Spectre.Console.Color color)
+        internal void DrawPlaying(Toplevel top,Song currentSong)
         {
-            Random random = new Random();
-            int[] spectrum = new int[width];
-            spectrum[0] = random.Next(spectrumLevels.Length - 1);
-            for (int i = 1; i < width; i++)
-            {
-                int min = Math.Max(0, spectrum[i - 1] - 1);
-                int max = Math.Min(spectrumLevels.Length - 1, spectrum[i - 1] + 1);
-                spectrum[i] = random.Next(min, max + 1);
-            }
-
-            for (int i = 0; i < width; i++)
-            {
-                string character = spectrumLevels[spectrum[i]];
-                Console.SetCursorPosition(x + i, y);
-                AnsiConsole.Write(new Markup(character, new Style(foreground: color)));
-            }
-            Console.SetCursorPosition(0, 0);
-        }
-
-        public static void GenerateAudioSpectrum(int x, int y, int width) =>
-            GenerateSpectrum(x, y, width, new[] { "_", ".", ":", "-", "=", "#" }, Spectre.Console.Color.Lime);
-
-        public static void GenerateAudioSpectrumInactive(int x, int y, int width) =>
-            GenerateSpectrum(x, y, width, new[] { "_", ".", ":" }, Spectre.Console.Color.RoyalBlue1);
-        public static void GenerateTimeDisplay(int x, int y, Spectre.Console.Color clr) {            
-            var time = DateTime.Now.ToString("HH:mm:ss - dd/MMM/yy - dddd");
-            WriteAtDown(time, x, y, clr);
-        }
-        private void DrawPanel(string title, string content, string color, Layout layout, string panelKey)
-        {
-            var panel = new Panel(Align.Center(new Markup(color + Markup.Escape(content ?? "Not Found") + "[/]")
-                .Overflow(Overflow.Ellipsis), VerticalAlignment.Middle))
-            {
-                Expand = true,
-                Header = new PanelHeader("[grey39]┐[/]" + color + title + "[/]" + "[grey39]┌[/]"),
-                BorderStyle = new Style(foreground: Spectre.Console.Color.Grey39)
+            var CurrentSongPanel = new Window ("Song Name") {
+                X = 0,
+                Y = 0,
+                Width = Dim.Percent(50),
+                Height = Dim.Fill (),
+                AutoSize = true,
+                CanFocus = false,
+                ColorScheme = _COLORSCHEME,
+                LayoutStyle = LayoutStyle.Computed
             };
-            layout[panelKey].Update(panel);
-        }
 
-        internal void DrawPlaying(Song currentSong)
-        {
-            var textColor = "[Lime]";
-
-            var layout = new Layout("Root")
-                .SplitColumns(
-                    new Layout("Left"),
-                    new Layout("Right")
-                        .SplitColumns(
-                            new Layout("Album"),
-                            new Layout("AlbumCover")
-                        ));
-
-            DrawPanel("Current Song", currentSong.Title, textColor, layout, "Left");
-            DrawPanel("Album", currentSong.Album, textColor, layout, "Album");
-
-            if (currentSong.img != null)
+            var CurrentSongName = new TextView()
             {
-                currentSong.img.MaxWidth(3);
-                currentSong.img.BilinearResampler();
-                var albumDataPanel = new Panel(Align.Center(currentSong.img, VerticalAlignment.Middle))
-                {
-                    Expand = true,
-                    Header = new PanelHeader("[grey39]┐[/]" + textColor + "AlbumIMG[/]" + "[grey39]┌[/]"),
-                    BorderStyle = new Style(foreground: Spectre.Console.Color.Grey39)
-                };
-                layout["AlbumCover"].Update(albumDataPanel);
-            }
-            else
-            {
-                layout["AlbumCover"].Invisible();
-            }
-
-            AnsiConsole.Background = Spectre.Console.Color.Black;
-            AnsiConsole.Write(layout);
-
-            GenerateTimeDisplay(14, 6, Spectre.Console.Color.Lime);
-            Console.SetCursorPosition(0, 0);
-        }
-
-        internal void DrawIdle()
-        {
-            DrawStatus("[royalblue1]Nothing is playing[/]", "[royalblue1]Status[/]", Spectre.Console.Color.RoyalBlue1);
-            GenerateTimeDisplay(50,6, Spectre.Console.Color.RoyalBlue1);
-        }
-
-        internal void DrawEmpty()
-        {
-            DrawStatus("[royalblue1]Waiting For Spotify[/]", "[royalblue1]Status[/]", Spectre.Console.Color.RoyalBlue1);
-            GenerateTimeDisplay(50, 6, Spectre.Console.Color.RoyalBlue1);
-        }
-
-        private void DrawStatus(string message, string header, Spectre.Console.Color color)
-        {
-            var panel = new Panel(Align.Center(new Markup(message).Overflow(Overflow.Ellipsis), VerticalAlignment.Middle))
-            {
-                Expand = true,
-                Header = new PanelHeader("[grey39]┐[/]" + header + "[grey39]┌[/]"),
-                BorderStyle = new Style(foreground: Spectre.Console.Color.Grey39)
+                X = Pos.Percent(50) - currentSong.Title.Length / 2,
+                Y = Pos.Percent(50),
+                Width = Dim.Fill(),
+                Height = Dim.Fill(),
+                CanFocus = false,
+                ColorScheme = _COLORSCHEME,
+                Text = currentSong.Title,
+                LayoutStyle = LayoutStyle.Computed
             };
-            var layout = new Layout("Root");
-            layout["Root"].Update(panel);
 
-            AnsiConsole.Background = Spectre.Console.Color.Black;
-            AnsiConsole.Write(layout);
-            GenerateAudioSpectrumInactive(1, 5, 97);
-            Console.SetCursorPosition(0, 0);
+            CurrentSongPanel.Add(CurrentSongName);
+
+            var CurrentAlbumPanel = new Window ("Album") {
+                X = Pos.Percent(50),
+                Y = 0,
+                Width = Dim.Percent(50),
+                Height = Dim.Fill (),
+                AutoSize = true,
+                CanFocus = false,
+                ColorScheme = _COLORSCHEME,
+                LayoutStyle = LayoutStyle.Computed
+            };
+
+            var CurrentAlbumName = new TextView()
+            {
+                X = Pos.Percent(50) - currentSong.Album.Length / 2,
+                Y = Pos.Percent(50),
+                Width = Dim.Fill(),
+                Height = Dim.Fill(),
+                CanFocus = false,
+                ColorScheme = _COLORSCHEME,
+                Text = currentSong.Album,
+                LayoutStyle = LayoutStyle.Computed
+            };
+
+            CurrentAlbumPanel.Add(CurrentAlbumName);
+            top.RemoveAll();
+            top.Add(CurrentSongPanel,CurrentAlbumPanel);
+            Application.Refresh();
+        }
+
+        internal void DrawIdle(Toplevel top)
+        {
+            DrawStatus("Nothing is playing", "Status",top);
+        }
+
+        internal void DrawEmpty(Toplevel top)
+        {
+            DrawStatus("Waiting For Spotify", "Status", top);
+        }
+
+        private void DrawStatus(string message, string header, Toplevel top)
+        {
+            var win = new Window (header) {                
+                Width = Dim.Fill (),
+                Height = Dim.Fill (),
+                AutoSize = true,
+                CanFocus = false,
+                ColorScheme = _COLORSCHEME,
+                LayoutStyle = LayoutStyle.Computed
+            };
+
+            var label = new Label(message)
+            {
+                X = Pos.Percent(50) - message.Length / 2,
+                Y = Pos.Percent(50),
+                Width = Dim.Fill(),
+                Height = Dim.Fill(),
+                CanFocus = false,
+                ColorScheme = _COLORSCHEME,
+                LayoutStyle = LayoutStyle.Computed
+            };
+            top.RemoveAll();
+            win.Add(label);
+            top.Add(win);
+            Application.Refresh();
         }
     }
 }

@@ -44,17 +44,9 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "dependencies": {
-            "CommandLineParser": {
+            "Terminal.Gui": {
               "target": "Package",
-              "version": "[2.9.1, )"
-            },
-            "Spectre.Console": {
-              "target": "Package",
-              "version": "[0.49.1, )"
-            },
-            "Spectre.Console.ImageSharp": {
-              "target": "Package",
-              "version": "[0.49.1, )"
+              "version": "[1.17.0, )"
             }
           },
           "imports": [
