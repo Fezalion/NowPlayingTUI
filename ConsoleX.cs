@@ -92,7 +92,7 @@ namespace NowPlayingTUI
 
         internal void DrawPlaying(Song currentSong)
         {
-            var textColor = "[Lime]";
+            var textColor = "[orange1]";
 
             var layout = new Layout("Root")
                 .SplitColumns(
@@ -125,21 +125,17 @@ namespace NowPlayingTUI
 
             AnsiConsole.Background = Spectre.Console.Color.Black;
             AnsiConsole.Write(layout);
-
-            GenerateTimeDisplay(14, 6, Spectre.Console.Color.Lime);
             Console.SetCursorPosition(0, 0);
         }
 
         internal void DrawIdle()
         {
-            DrawStatus("[royalblue1]Nothing is playing[/]", "[royalblue1]Status[/]", Spectre.Console.Color.RoyalBlue1);
-            GenerateTimeDisplay(50,6, Spectre.Console.Color.RoyalBlue1);
+            DrawStatus("[orange1]Nothing is playing[/]", "[orange1]Status[/]", Spectre.Console.Color.Orange1);
         }
 
         internal void DrawEmpty()
         {
-            DrawStatus("[royalblue1]Waiting For Spotify[/]", "[royalblue1]Status[/]", Spectre.Console.Color.RoyalBlue1);
-            GenerateTimeDisplay(50, 6, Spectre.Console.Color.RoyalBlue1);
+            DrawStatus("[orange1]Waiting For Spotify[/]", "[orange1]Status[/]", Spectre.Console.Color.Orange1);
         }
 
         private void DrawStatus(string message, string header, Spectre.Console.Color color)
@@ -155,7 +151,6 @@ namespace NowPlayingTUI
 
             AnsiConsole.Background = Spectre.Console.Color.Black;
             AnsiConsole.Write(layout);
-            GenerateAudioSpectrumInactive(1, 5, 97);
             Console.SetCursorPosition(0, 0);
         }
     }

@@ -207,8 +207,8 @@ namespace NowPlayingTUI {
             using WebClient client = new();
             string xml = client.DownloadString(url);
             XDocument xmlDoc = XDocument.Load(new StringReader(xml));
-            var trackTitle = xmlDoc.XPathSelectElement("//track/name")?.Value ?? "Unknown Title";
-            var artistName = xmlDoc.XPathSelectElement("//artist/name")?.Value ?? "Unknown Artist";
+            var trackTitle = xmlDoc.XPathSelectElement("//track/name")?.Value ?? parts[1];
+            var artistName = xmlDoc.XPathSelectElement("//artist/name")?.Value ?? parts[0];
             var albumName = xmlDoc.XPathSelectElement("//album/title")?.Value ?? "Unknown Album";
             var imgUrl = xmlDoc.XPathSelectElement("//album/image[@size='small']")?.Value ?? null;
             int songDur = int.Parse(xmlDoc.XPathSelectElement("//track/duration")?.Value ?? "0");
