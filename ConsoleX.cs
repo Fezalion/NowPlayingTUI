@@ -106,6 +106,9 @@ namespace NowPlayingTUI
             DrawPanel("Current Song", currentSong.Title, textColor, layout, "Left");
             DrawPanel("Album", currentSong.Album, textColor, layout, "Album");
 
+            if(currentSong.Album.ToLower() == "unknown album")
+                layout["Right"].Invisible();
+
             if (currentSong.img != null)
             {
                 currentSong.img.MaxWidth(3);
